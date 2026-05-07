@@ -4,6 +4,20 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>小路人 · 导航</title>
+<!-- DNS预解析 + 预连接，加速外部链接加载 -->
+<link rel="dns-prefetch" href="//restapi.amap.com">
+<link rel="dns-prefetch" href="//itunes.apple.com">
+<link rel="dns-prefetch" href="//github.com">
+<link rel="dns-prefetch" href="//dash.cloudflare.com">
+<link rel="dns-prefetch" href="//hdblue.cc">
+<link rel="dns-prefetch" href="//acl4ssr-sub.github.io">
+<link rel="dns-prefetch" href="//pinglian.lol">
+<link rel="dns-prefetch" href="//ptcc.cc.cd">
+<link rel="dns-prefetch" href="//pting.club">
+<link rel="dns-prefetch" href="//xiaoluren.cc.cd">
+<link rel="dns-prefetch" href="//my.dnshe.com">
+<link rel="preconnect" href="//restapi.amap.com">
+<link rel="preconnect" href="//itunes.apple.com">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🧭</text></svg>">
 <style>
 :root{--glass:rgba(255,255,255,0.07);--glass-hover:rgba(255,255,255,0.13);--border:rgba(255,255,255,0.1);--text:#f0f0f0;--dim:rgba(255,255,255,0.5)}
@@ -58,9 +72,9 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'PingFang SC',sans-
 .card:hover .ctag{opacity:1}
 footer{text-align:center;color:var(--dim);font-size:12px;padding:20px;letter-spacing:1px}
 
-/* 内网按钮 - 竖形胶囊，放在 topbar 右侧 */
-.lan-btn-bar{background:linear-gradient(135deg,#7c6df0,#a78bfa);color:#fff;border:none;border-radius:22px;cursor:pointer;font-size:12px;letter-spacing:1px;box-shadow:0 2px 12px rgba(124,109,240,0.4);transition:all .3s;padding:10px 6px;writing-mode:vertical-rl;text-orientation:mixed;line-height:1.4;height:64px;flex-shrink:0}
-.lan-btn-bar:hover{background:linear-gradient(135deg,#a78bfa,#f472b6);box-shadow:0 4px 16px rgba(124,109,240,0.5)}
+/* 内网按钮 - 固定屏幕右侧中间，跟随页面滚动 */
+.lan-btn-fixed{position:fixed;right:24px;top:50%;transform:translateY(-50%);z-index:99;background:linear-gradient(135deg,#7c6df0,#a78bfa);color:#fff;border:none;border-radius:22px;cursor:pointer;font-size:12px;letter-spacing:1px;box-shadow:0 4px 20px rgba(124,109,240,0.4);transition:all .3s;padding:10px 6px;writing-mode:vertical-rl;text-orientation:mixed;line-height:1.4;height:64px;flex-shrink:0}
+.lan-btn-fixed:hover{background:linear-gradient(135deg,#a78bfa,#f472b6);box-shadow:0 8px 30px rgba(124,109,240,0.5)}
 
 /* 内网面板 - 右侧弹出，底部留足空间 */
 .lan-panel{position:fixed;right:-230px;top:auto;bottom:80px;width:210px;background:rgba(10,10,30,.97);border:1px solid var(--border);border-radius:16px 0 0 16px;backdrop-filter:blur(20px);z-index:99;transition:right .4s cubic-bezier(.4,0,.2,1);padding:20px 16px;box-shadow:-4px 0 30px rgba(0,0,0,.4)}
@@ -90,8 +104,8 @@ body.dark{--glass:rgba(0,0,0,.3);--glass-hover:rgba(0,0,0,.45);--border:rgba(255
 .rip{font-size:13px;color:var(--dim);margin-left:auto}
 @keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:none}}
 @keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:none}}
-@media(max-width:768px){.topbar{padding:8px 14px;gap:6px}.logo{font-size:1em}.weather{flex-shrink:0}.music-bar{min-width:160px;padding:6px 10px 6px 6px;gap:7px;max-width:200px}.mcover{width:28px;height:28px;font-size:12px}.mname{font-size:12px}.martist{font-size:9px}.mbtns button{font-size:14px}.grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}.wrap{padding:20px 14px 90px}.cat{margin-bottom:24px}.search-box{margin-bottom:24px}.swrap input{padding:11px 44px 11px 18px;font-size:14px}.lan-btn-bar{height:52px;font-size:11px;padding:8px 5px}.lan-panel{bottom:68px;width:180px}}
-@media(max-width:480px){.topbar{flex-wrap:nowrap;padding:8px 10px}.logo{font-size:.95em;letter-spacing:1px}.weather-desc,#wdesc{display:none}.music-bar{max-width:150px;padding:5px 7px 5px 4px}.mbtns{display:none!important}.mcover{width:22px;height:22px;font-size:10px}.grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}.card{padding:16px 8px 12px}.ci{font-size:1.7em}.wrap{padding:16px 10px 80px}.swrap input{padding:10px 40px 10px 16px;font-size:13px}.lan-btn-bar{height:44px;font-size:10px;padding:6px 4px}}
+@media(max-width:768px){.topbar{padding:8px 14px;gap:6px}.logo{font-size:1em}.weather{flex-shrink:0}.music-bar{min-width:160px;padding:6px 10px 6px 6px;gap:7px;max-width:200px}.mcover{width:28px;height:28px;font-size:12px}.mname{font-size:12px}.martist{font-size:9px}.mbtns button{font-size:14px}.grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}.wrap{padding:20px 14px 90px}.cat{margin-bottom:24px}.search-box{margin-bottom:24px}.swrap input{padding:11px 44px 11px 18px;font-size:14px}.lan-btn-fixed{right:14px;height:52px;font-size:11px;padding:8px 5px}.lan-panel{bottom:68px;width:180px}
+@media(max-width:480px){.topbar{flex-wrap:nowrap;padding:8px 10px}.logo{font-size:.95em;letter-spacing:1px}.weather-desc,#wdesc{display:none}.music-bar{max-width:150px;padding:5px 7px 5px 4px}.mbtns{display:none!important}.mcover{width:22px;height:22px;font-size:10px}.grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}.card{padding:16px 8px 12px}.ci{font-size:1.7em}.wrap{padding:16px 10px 80px}.swrap input{padding:10px 40px 10px 16px;font-size:13px}.lan-btn-fixed{right:10px;height:44px;font-size:10px;padding:6px 4px}}
 @media(min-width:1200px){.wrap{max-width:1400px}.grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}}
 @media(min-width:1600px){.wrap{max-width:1600px;padding:40px 48px 100px}.grid{grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:14px}.card{padding:24px 14px 18px}.ci{font-size:2.4em}.cn{font-size:14px}.cat{margin-bottom:40px}}
 </style>
@@ -99,8 +113,10 @@ body.dark{--glass:rgba(0,0,0,.3);--glass-hover:rgba(0,0,0,.45);--border:rgba(255
 <body>
 <div class="bg"></div>
 
+<!-- 内网开关按钮 - 固定屏幕右侧中间 -->
+<button class="lan-btn-fixed" onclick="toggleLan()">🌐<br>内<br>网</button>
+
 <!-- 内网面板 -->
-<div class="lan-panel" id="lanPanel">
   <h3>🌐 内网服务</h3>
   <a class="lan-item" href="http://192.168.2.225:8000" target="_blank">🖥️ 飞牛OS</a>
   <a class="lan-item" href="http://192.168.2.225:8000/v" target="_blank">🎬 飞牛影视</a>
@@ -121,7 +137,6 @@ body.dark{--glass:rgba(0,0,0,.3);--glass-hover:rgba(0,0,0,.45);--border:rgba(255
     </div>
   </div>
   <div class="top-right">
-    <button class="lan-btn-bar" onclick="toggleLan()">🌐<br>内<br>网</button>
     <div class="music-bar" id="musicBar" onclick="toggleMP()">
       <div class="mcover" id="mcover">🎵</div>
       <div class="minfo">
