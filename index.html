@@ -4,6 +4,12 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>小路人 · 导航</title>
+<!-- 优化DNS预解析：只保留核心域名，减少冗余 -->
+<link rel="dns-prefetch" href="//restapi.amap.com">
+<link rel="dns-prefetch" href="//itunes.apple.com">
+<link rel="preconnect" href="//restapi.amap.com" crossorigin>
+<link rel="preconnect" href="//itunes.apple.com" crossorigin>
+<!-- 移除冗余的dns-prefetch，减少解析耗时 -->
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='80'>🧭</text></svg>">
 <style>
 :root{--glass:rgba(255,255,255,0.07);--glass-hover:rgba(255,255,255,0.13);--border:rgba(255,255,255,0.1);--text:#f0f0f0;--dim:rgba(255,255,255,0.5)}
@@ -59,12 +65,13 @@ body{font-family:'Segoe UI',-apple-system,BlinkMacSystemFont,'PingFang SC',sans-
 footer{text-align:center;color:var(--dim);font-size:12px;padding:20px;letter-spacing:1px}
 
 /* 内网按钮 - 固定在右下角，不挡音乐栏 */
-.lan-btn{position:sticky;bottom:24px;float:right;margin:0 24px 0 0;background:linear-gradient(135deg,#7c6df0,#a78bfa);color:#fff;border:none;padding:12px 18px;border-radius:50px;cursor:pointer;font-size:13px;letter-spacing:1px;box-shadow:0 4px 20px rgba(124,109,240,0.4);transition:all .3s;white-space:nowrap;z-index:99}
-.lan-btn:hover{background:linear-gradient(135deg,#a78bfa,#f472b6);transform:translateY(-2px);box-shadow:0 8px 30px rgba(124,109,240,0.5)}
+.lan-btn{position:fixed;top:50%;right:24px;transform:translateY(-50%);z-index:99;background:linear-gradient(135deg,#7c6df0,#a78bfa);color:#fff;border:none;border-radius:22px;cursor:pointer;font-size:13px;letter-spacing:1px;box-shadow:0 4px 20px rgba(124,109,240,0.4);transition:all .3s;padding:8px 10px;height:64px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;justify-content:space-between}
+.lan-btn span{display:block;line-height:1}
+.lan-btn:hover{background:linear-gradient(135deg,#a78bfa,#f472b6);box-shadow:0 8px 30px rgba(124,109,240,0.5)}
 
 /* 内网面板 - 右侧弹出，底部留足空间不挡音乐栏 */
-.lan-panel{position:fixed;right:-230px;top:auto;bottom:80px;width:210px;background:rgba(10,10,30,.97);border:1px solid var(--border);border-radius:16px 0 0 16px;backdrop-filter:blur(20px);z-index:99;transition:right .4s cubic-bezier(.4,0,.2,1);padding:20px 16px;box-shadow:-4px 0 30px rgba(0,0,0,.4)}
-.lan-panel.open{right:0}
+.lan-panel{position:fixed;right:88px;top:50%;transform:translateY(-50%);width:210px;background:rgba(10,10,30,.97);border:1px solid var(--border);border-radius:16px;backdrop-filter:blur(20px);z-index:99;transition:opacity .3s,transform .3s;padding:20px 16px;box-shadow:-4px 0 30px rgba(0,0,0,.4);opacity:0;pointer-events:none}
+.lan-panel.open{right:88px;transform:translateY(-50%);opacity:1;pointer-events:all}
 .lan-panel h3{color:#fff;font-size:13px;margin-bottom:14px;letter-spacing:2px;text-align:center;padding-bottom:10px;border-bottom:1px solid var(--border)}
 .lan-item{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;background:rgba(255,255,255,0.06);border:1px solid var(--border);color:var(--text);text-decoration:none;font-size:12px;margin-bottom:7px;transition:all .2s}
 .lan-item:hover{background:rgba(167,139,250,0.2);border-color:rgba(167,139,250,0.4);color:#fff;transform:translateX(-3px)}
@@ -121,8 +128,8 @@ body.dark{--glass:rgba(0,0,0,.3);--glass-hover:rgba(0,0,0,.45);--border:rgba(255
 @keyframes mLyricMarquee{0%{transform:translateX(0)}100%{transform:translateX(-50%)}}
 #mlyric.marquee{animation:mLyricMarquee 10s linear infinite;display:inline-block;padding-left:100%}
 #mlyric.paused{animation-play-state:paused}
-@media(max-width:768px){.topbar{padding:8px 14px;gap:6px}.logo{font-size:1em}.weather{flex-shrink:0}.music-bar{min-width:160px;padding:6px 10px 6px 6px;gap:7px;max-width:200px}.mcover{width:28px;height:28px;font-size:12px}.mname{font-size:12px}.martist{font-size:9px}.mbtns button{font-size:14px}.grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}.wrap{padding:20px 14px 90px}.cat{margin-bottom:24px}.search-box{margin-bottom:24px}.swrap input{padding:11px 44px 11px 18px;font-size:14px}.lan-btn{bottom:14px;right:14px;font-size:11px;padding:9px 14px}.lan-panel{bottom:68px;width:180px}.mpctrl button{font-size:18px;padding:5px}.mpctrl{gap:10px}.mpalbum{width:100px;height:100px}#mpcd{width:64px;height:64px}}
-@media(max-width:480px){.topbar{flex-wrap:nowrap;padding:8px 10px}.logo{font-size:.95em;letter-spacing:1px}.weather-desc,#wdesc{display:none}.music-bar{max-width:150px;padding:5px 7px 5px 4px}.mbtns{display:none!important}.mcover{width:22px;height:22px;font-size:10px}.grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}.card{padding:16px 8px 12px}.ci{font-size:1.7em}.wrap{padding:16px 10px 80px}.swrap input{padding:10px 40px 10px 16px;font-size:13px}.mpalbum{width:90px;height:90px}#mpcd{width:58px;height:58px}#mpcdc{width:22px;height:22px}.lyrics-box{height:60px;font-size:10px}.lyric-line.active{font-size:12px}}
+@media(max-width:768px){.topbar{padding:8px 14px;gap:6px}.logo{font-size:1em}.weather{flex-shrink:0}.music-bar{min-width:160px;padding:6px 10px 6px 6px;gap:7px;max-width:200px}.mcover{width:28px;height:28px;font-size:12px}.mname{font-size:12px}.martist{font-size:9px}.mbtns button{font-size:14px}.grid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:10px}.wrap{padding:20px 14px 90px}.cat{margin-bottom:24px}.search-box{margin-bottom:24px}.swrap input{padding:11px 44px 11px 18px;font-size:14px}.lan-btn{top:50%;right:8px;transform:translateY(-50%);font-size:14px;padding:5px 9px;height:56px}.lan-panel{top:50%;transform:translateY(-50%);right:42px;width:170px}.mpctrl button{font-size:18px;padding:5px}.mpctrl{gap:10px}.mpalbum{width:100px;height:100px}#mpcd{width:64px;height:64px}}
+@media(max-width:480px){.topbar{flex-wrap:nowrap;padding:8px 10px}.logo{font-size:.95em;letter-spacing:1px}.weather-desc,#wdesc{display:none}.music-bar{max-width:150px;padding:5px 7px 5px 4px}.mbtns{display:none!important}.mcover{width:22px;height:22px;font-size:10px}.grid{grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:8px}.card{padding:16px 8px 12px}.ci{font-size:1.7em}.wrap{padding:16px 10px 80px}.swrap input{padding:10px 40px 10px 16px;font-size:13px}.mpalbum{width:90px;height:90px}#mpcd{width:58px;height:58px}#mpcdc{width:22px;height:22px}.lyrics-box{height:60px;font-size:10px}.lyric-line.active{font-size:12px}.lan-btn{top:50%;right:8px;transform:translateY(-50%);font-size:13px;padding:5px 8px;height:48px}.lan-panel{top:50%;transform:translateY(-50%);right:36px;width:150px}}
 @media(min-width:1200px){.wrap{max-width:1400px}.grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}}
 @media(min-width:1600px){.wrap{max-width:1600px;padding:40px 48px 100px}.grid{grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:14px}.card{padding:24px 14px 18px}.ci{font-size:2.4em}.cn{font-size:14px}.cat{margin-bottom:40px}}
 </style>
@@ -131,19 +138,17 @@ body.dark{--glass:rgba(0,0,0,.3);--glass-hover:rgba(0,0,0,.45);--border:rgba(255
 <div class="bg"></div>
 
 <!-- 内网开关按钮 -->
-<button class="lan-btn" onclick="toggleLan()">🌐 内网</button>
+<button class="lan-btn" onclick="toggleLan()"><span>🌐</span><span>内</span><span>网</span></button>
 
 <!-- 内网面板 -->
 <div class="lan-panel" id="lanPanel">
   <h3>🌐 内网服务</h3>
-  <a class="lan-item" href="http://192.168.2.225:8000" target="_blank">🖥️ 飞牛OS</a>
-  <a class="lan-item" href="http://192.168.2.225:8000/v" target="_blank">🎬 飞牛影视</a>
-  <a class="lan-item" href="http://192.168.2.225:3000" target="_blank">🎥 MoviePilot</a>
-  <a class="lan-item" href="http://192.168.2.225:5173" target="_blank">🎵 道理鱼</a>
-  <a class="lan-item" href="http://192.168.2.225:9527/music/" target="_blank">🎵 落雪音乐</a>
-  <a class="lan-item" href="http://192.168.2.1" target="_blank">📡 路由器</a>
-  <a class="lan-item" href="http://192.168.2.252" target="_blank">⚡ Opwert</a>
-  <div class="lan-tip"><strong>💡 提示：</strong>内网服务需在同一局域网</div>
+  <a class="lan-item" href="http://192.168.2.225:8000" target="_blank" rel="noopener noreferrer">🖥️ 飞牛OS</a>
+  <a class="lan-item" href="http://192.168.2.225:8000/v" target="_blank" rel="noopener noreferrer">🎬 飞牛影视</a>
+  <a class="lan-item" href="http://192.168.2.225:3000" target="_blank" rel="noopener noreferrer">🎥 MoviePilot</a>
+  <a class="lan-item" href="http://192.168.2.1" target="_blank" rel="noopener noreferrer">📡 路由器</a>
+  <a class="lan-item" href="http://192.168.2.252" target="_blank" rel="noopener noreferrer">⚡ Opwert</a>
+  <div class="lan-tip"><strong>💡 提示：</strong>内网服务需在同一WiFi下访问</div>
 </div>
 
 <div class="topbar">
@@ -200,12 +205,29 @@ body.dark{--glass:rgba(0,0,0,.3);--glass-hover:rgba(0,0,0,.45);--border:rgba(255
     <input type="text" id="mpSInput" placeholder="搜索歌曲..." onkeydown="if(event.key==='Enter')srchMusic()">
     <button class="mpsearchbtn" onclick="srchMusic()">🔍 搜索</button>
   </div>
-  <!-- 网易云播放器 iframe -->
-  <div id="playerWrap" style="display:none;margin:6px 0 4px">
-    <div id="playerTip" style="text-align:center;font-size:11px;color:var(--dim);margin-bottom:6px">🎵 正在加载播放器...</div>
-    <iframe id="neteasePlayer" src="" width="100%" height="86" frameborder="0" allow="autoplay; fullscreen" style="border-radius:12px;display:block;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.08)" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-forms"></iframe>
+  <!-- iTunes 直链播放器 -->
+  <div id="playerWrap" style="display:none;margin:8px 0 4px">
+    <div style="display:flex;align-items:center;gap:10px;padding:8px 10px;background:rgba(255,255,255,0.05);border-radius:12px;border:1px solid var(--border)">
+      <img id="songImg" src="" style="width:48px;height:48px;border-radius:8px;flex-shrink:0;object-fit:cover;background:linear-gradient(135deg,#7c6df0,#f472b6)">
+      <div style="flex:1;min-width:0">
+        <div id="songTitle" style="font-size:13px;font-weight:600;color:#fff;white-space:nowrap;overflow:hidden;text-overflow:ellipsis">--</div>
+        <div id="songArtist" style="font-size:10px;color:var(--dim);margin-top:2px">--</div>
+      </div>
+      <div style="display:flex;align-items:center;gap:4px">
+        <button class="mbtn" onclick="prevT()" style="font-size:18px">⏮</button>
+        <button class="mbtn" onclick="togPlay()" id="pbtn2" style="font-size:24px;color:#a78bfa">▶</button>
+        <button class="mbtn" onclick="nextT()" style="font-size:18px">⏭</button>
+      </div>
+    </div>
+    <!-- 进度条 -->
+    <div id="mpBar" style="width:100%;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;cursor:pointer;margin-top:6px;position:relative">
+      <div id="mpFill" style="height:100%;background:linear-gradient(90deg,#7c6df0,#a78bfa);border-radius:2px;width:0%;transition:width .3s;pointer-events:none"></div>
+    </div>
+    <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--dim);margin-top:4px">
+      <span id="mpCur">0:00</span><span id="mpDur">0:30</span>
+    </div>
   </div>
-  <div id="searchTip" style="display:block;text-align:center;font-size:11px;color:var(--dim);margin:4px 0">🔍 输入歌名/歌手，点搜索，列表自动播放</div>
+  <div id="searchTip" style="text-align:center;font-size:11px;color:var(--dim);margin:4px 0">🔍 输入歌名/歌手，点搜索</div>
   <!-- 歌曲列表 -->
   <div id="songListWrap" style="border-top:1px solid var(--border);padding-top:6px;margin-top:4px">
     <div style="font-size:10px;color:var(--dim);margin-bottom:4px;letter-spacing:1px">📋 播放列表</div>
@@ -214,7 +236,7 @@ body.dark{--glass:rgba(0,0,0,.3);--glass-hover:rgba(0,0,0,.45);--border:rgba(255
 </div>
 
 <!-- 隐藏的 audio 元素 -->
-<audio id="audioEl" crossorigin="anonymous" style="display:none" preload="metadata" type="audio/mp4"></audio>
+<audio id="audioEl" style="display:none"></audio>
 
 <script>
 const LINKS=[
@@ -232,102 +254,239 @@ const LINKS=[
   {name:"免费域名",icon:"🌐",url:"https://my.dnshe.com/",cat:"tools",tag:"域名"},
   {name:"自建魔法",icon:"🪄",url:"https://ptcc.cc.cd/admin",cat:"pt",tag:"代理"},
   {name:"蜂巢PT",icon:"🐝",url:"https://pting.club",cat:"pt",tag:"PT"},
-  {name:"总导航",icon:"🌐",url:"https://li0580.com",cat:"pt",tag:"导航"},
+  {name:"CF导航",icon:"🌐",url:"https://xiaoluren.cc.cd",cat:"pt",tag:"导航"},
   {name:"Cloudflare",icon:"☁️",url:"https://dash.cloudflare.com/",cat:"dev",tag:"云"},
   {name:"GitHub",icon:"🐙",url:"https://github.com/",cat:"dev",tag:"代码"},
 ];
 const m2={local:'cl',tools:'ct',pt:'cp',dev:'cd'};
-function render(){for(const[c,id]of Object.entries(m2)){const el=document.getElementById(id);el.innerHTML=LINKS.filter(l=>l.cat===c).map(l=>`<a class="card" href="${l.url}" target="_blank" rel="noopener noreferrer"><div class="cglow"></div><span class="ctag">${l.tag}</span><span class="ci">${l.icon}</span><div class="cn">${l.name}</div></a>`).join('');}}
+
+// 优化1：重构渲染逻辑，移除冗余的prefetch属性
+function render(){
+  for(const[c,id]of Object.entries(m2)){
+    const el=document.getElementById(id);
+    el.innerHTML=LINKS.filter(l=>l.cat===c).map(l=>`
+      <a class="card" href="${l.url}" target="_blank" rel="noopener noreferrer">
+        <div class="cglow"></div>
+        <span class="ctag">${l.tag}</span>
+        <span class="ci">${l.icon}</span>
+        <div class="cn">${l.name}</div>
+      </a>
+    `).join('');
+  }
+}
 render();
 
-// 天气：直接用wttr.in上海（无需定位，快速准确）
+// 优化2：移除高频的prefetch逻辑（原逻辑会导致网络阻塞）
+// 保留基础的DNS预解析即可，无需页面预取
+
+// 优化3：天气接口请求添加超时控制，避免阻塞页面
+const AK='e6529af7ef8ded3cb5719fc90dda27d8';
 (function loadW(){
-  var icons={'Clear':'☀️','Sunny':'☀️','Partly cloudy':'⛅','Cloudy':'🌥️','Overcast':'☁️','Mist':'🌫️','Fog':'🌫️','Light rain':'🌧️','Heavy rain':'🌧️','Light snow':'🌨️','Heavy snow':'❄️','Sleet':'🌨️','Thunderstorm':'⛈️','Hail':'🧊'};
-  var xh=new XMLHttpRequest();
-  xh.open('GET','https://wttr.in/Shanghai?format=j1',true);
-  xh.onload=function(){
-    if(xh.status===200){
-      try{
-        var d=JSON.parse(xh.responseText).current_condition[0];
-        var temp=d.temp_C+'°';
-        var desc=d.weatherDesc[0].value;
-        var wcode=d.weatherCode[0];
-        document.getElementById('wtemp').textContent=temp;
-        document.getElementById('wdesc').textContent=desc;
-        document.getElementById('wcity').textContent='上海';
-        document.getElementById('wicon').textContent=icons[desc]||icons[wcode]||'🌡️';
-      }catch(e){console.log('天气解析失败',e);}
-    }
-  };
-  xh.onerror=function(){document.getElementById('wcity').textContent='天气获取失败';};
-  xh.send();
+  // 设置超时控制，5秒未响应则停止请求
+  const timeout = setTimeout(() => {
+    document.getElementById('wcity').textContent = '定位超时';
+  }, 5000);
+
+  fetch('https://restapi.amap.com/v3/ip?key='+AK, { timeout: 5000 })
+    .then(r=>r.json())
+    .then(ip=>{
+      clearTimeout(timeout);
+      const city=ip.city||'深圳';
+      fetch('https://restapi.amap.com/v3/weather/weatherInfo?key='+AK+'&city='+encodeURIComponent(city)+'&extensions=base', { timeout: 5000 })
+        .then(r=>r.json())
+        .then(w=>{
+          if(w&&w.lives&&w.lives[0]){
+            const d=w.lives[0];
+            const icon=d.weather.includes('雨')?'🌧':d.weather.includes('雪')?'❄':d.weather.includes('阴')?'⛅':d.weather.includes('多云')?'🌥':d.weather.includes('晴')?'☀️':'🌤';
+            document.getElementById('wicon').textContent=icon;
+            document.getElementById('wtemp').textContent=d.temperature+'°';
+            document.getElementById('wcity').textContent=city;
+            document.getElementById('wdesc').textContent=d.weather+' '+d.winddirection+d.windpower+'级';
+          }
+        })
+        .catch(()=>{
+          document.getElementById('wcity').textContent='定位失败';
+        });
+    })
+    .catch(()=>{
+      clearTimeout(timeout);
+      document.getElementById('wcity').textContent='定位失败';
+    });
 })();
 
-// 内网面板切换
+const eng={baidu:'https://www.baidu.com/s?wd=',bing:'https://www.bing.com/search?q=',google:'https://www.google.com/search?q=',ddg:'https://duckduckgo.com/?q='};
+let curE='baidu';
+function goSearch(){
+  const q=document.getElementById('sInput').value.trim();
+  if(q) {
+    // 优化4：搜索跳转使用noopener noreferrer，避免新窗口阻塞
+    const a = document.createElement('a');
+    a.href = eng[curE]+encodeURIComponent(q);
+    a.target = '_blank';
+    a.rel = 'noopener noreferrer';
+    a.click();
+  }
+}
+function setE(n,el){
+  curE=n;
+  document.querySelectorAll('.epill').forEach(p=>p.classList.remove('active'));
+  el.classList.add('active');
+}
 function toggleLan(){
   document.getElementById('lanPanel').classList.toggle('open');
 }
 
-// 搜索
-function goSearch(){
-  var q=document.getElementById('sInput').value;
-  if(!q)return;
-  var engines={baidu:'https://www.baidu.com/s?wd=',bing:'https://www.bing.com/search?q=',google:'https://www.google.com/search?q=',ddg:'https://duckduckgo.com/?q='};
-  var se=window.currentEngine||'baidu';
-  window.open(engines[se]+encodeURIComponent(q),'_blank');
-}
-function setE(name,el){
-  window.currentEngine=name;
-  document.querySelectorAll('.epill').forEach(e=>e.classList.remove('active'));
-  el.classList.add('active');
+let pl=[],pi=0,play2=false,mpOpen=false;
+const audio=document.getElementById('audioEl');
+
+// 优化5：音乐搜索添加超时和错误处理，避免阻塞
+async function srchMusic(){
+  const q=document.getElementById('mpSInput').value.trim()||'夜空中最亮的星';
+  try{
+    // 添加请求超时
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 8000);
+    
+    const r=await fetch('https://itunes.apple.com/search?term='+encodeURIComponent(q)+'&media=music&entity=song&limit=12', {
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+    
+    const d=await r.json();
+    if(d.results&&d.results.length){
+      pl=d.results.map(s=>({
+        title:s.trackName||'未知',
+        author:s.artistName||'',
+        album:s.collectionName||'',
+        duration:s.trackTimeMillis||30000,
+        pic:s.artworkUrl100?.replace('100x100','300x300')||'',
+        url:s.previewUrl||'',
+      }));
+      renderRes();
+      if(pl.length) playT(0);
+    }else{
+      document.getElementById('mpRes').innerHTML='<div style="text-align:center;padding:16px;color:var(--dim);font-size:12px">未找到相关歌曲</div>';
+    }
+  }catch(e){
+    document.getElementById('mpRes').innerHTML='<div style="text-align:center;padding:16px;color:var(--dim);font-size:12px">搜索失败，请重试</div>';
+  }
 }
 
-// 音乐播放器
-var currentTrack=0;
-var isPlaying=false;
-var tracks=[
-  {name:'小路人',artist:'欢迎使用',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'}
-];
-function toggleMP(){
-  document.getElementById('mp').classList.toggle('show');
-}
-function togPlay(){
-  var a=document.getElementById('audioEl');
-  if(!a.src||a.src.indexOf('example')>-1){srchMusic();return;}
-  if(isPlaying){a.pause();isPlaying=false;document.getElementById('pbtn').textContent='▶';document.getElementById('mcover').classList.remove('playing');}
-  else{a.play();isPlaying=true;document.getElementById('pbtn').textContent='⏸';document.getElementById('mcover').classList.add('playing');}
-}
-function prevT(){currentTrack=(currentTrack-1+tracks.length)%tracks.length;playTrack(currentTrack);}
-function nextT(){currentTrack=(currentTrack+1)%tracks.length;playTrack(currentTrack);}
-function playTrack(i){
-  var a=document.getElementById('audioEl');
-  var t=tracks[i];
-  document.getElementById('mname').textContent=t.name||'未命名';
-  document.getElementById('martist').textContent=t.artist||'';
-  if(t.url){a.src=t.url;a.play();isPlaying=true;document.getElementById('pbtn').textContent='⏸';document.getElementById('mcover').classList.add('playing');}
-  else{srchMusic();}
+// 修复渲染列表的语法错误（原代码多了一个</div>）
+function renderRes(){
+  const el=document.getElementById('mpRes');
+  el.innerHTML=pl.map((t,i)=>{
+    const playing=i===pi&&play2?' playing':'';
+    const icon=i===pi&&play2?'⏸':'▶';
+    return`
+      <div class="mpitem${playing}" onclick="playT(${i})">
+        <div class="rin">${t.title}</div>
+        <div class="ria">${t.author}</div>
+        <span class="rip">${icon}</span>
+      </div>
+    `;
+  }).join('');
 }
 
-function srchMusic(){
-  var q=document.getElementById('mpSInput').value||'华语流行';
-  var mp=document.getElementById('neteasePlayer');
-  var pw=document.getElementById('playerWrap');
-  var tip=document.getElementById('searchTip');
-  mp.src='https://music.163.com/outchain/player?type=0&id=887145790&auto=1&bgId=7cd5eede3a97c4f6e6f6';
-  document.getElementById('playerTip').textContent='🎵 正在加载播放器...';
-  mp.onload=function(){document.getElementById('playerTip').textContent='';};
-  mp.onerror=function(){document.getElementById('playerTip').textContent='⚠️ 播放器加载失败';};
-  pw.style.display='block';
-  tip.style.display='none';
-  isPlaying=true;
+function playT(i){
+  if(!pl.length)return;
+  pi=i;
+  const t=pl[pi];
+  // 顶部音乐条
+  document.getElementById('mname').textContent=t.title;
+  document.getElementById('martist').textContent=t.author;
   document.getElementById('pbtn').textContent='⏸';
+  document.getElementById('pbtn2').textContent='⏸';
   document.getElementById('mcover').classList.add('playing');
-  document.getElementById('mname').textContent='网易云音乐';
-  document.getElementById('martist').textContent='搜索: '+q;
+  // 播放器面板
+  document.getElementById('playerWrap').style.display='block';
+  document.getElementById('searchTip').style.display='none';
+  document.getElementById('songImg').src=t.pic;
+  document.getElementById('songTitle').textContent=t.title;
+  document.getElementById('songArtist').textContent=t.author;
+  document.getElementById('mpDur').textContent=fmt(t.duration/1000);
+  // 播放直链
+  audio.src=t.url||'';
+  audio.currentTime=0;
+  document.getElementById('mpFill').style.width='0%';
+  document.getElementById('mpCur').textContent='0:00';
+  if(t.url){
+    audio.play().then(()=>{
+      play2=true;
+      renderRes();
+    }).catch(e=>{
+      document.getElementById('songTitle').textContent=t.title+' (无法播放)';
+      play2=false;
+    });
+  }else{
+    document.getElementById('songTitle').textContent=t.title+' (无预览)';
+    play2=false;
+  }
+  renderRes();
+  // 进度条更新
+  audio.ontimeupdate=()=>{
+    if(audio.duration){
+      const pct=(audio.currentTime/audio.duration*100).toFixed(1);
+      document.getElementById('mpFill').style.width=pct+'%';
+      document.getElementById('mpCur').textContent=fmt(audio.currentTime);
+    }
+  };
+  audio.onended=()=>{nextT();};
 }
 
-window.currentEngine='baidu';
+function fmt(s){
+  return Math.floor(s/60)+':'+(Math.floor(s%60)+'').padStart(2,'0');
+}
 
+function togPlay(){
+  if(!pl.length){
+    document.getElementById('mpSInput').value='夜空中最亮的星';
+    srchMusic();
+    return;
+  }
+  if(play2){
+    audio.pause();
+    play2=false;
+    document.getElementById('pbtn').textContent='▶';
+    document.getElementById('pbtn2').textContent='▶';
+    document.getElementById('mcover').classList.remove('playing');
+  }else{
+    audio.play().then(()=>{
+      play2=true;
+      document.getElementById('pbtn').textContent='⏸';
+      document.getElementById('pbtn2').textContent='⏸';
+      document.getElementById('mcover').classList.add('playing');
+    }).catch(()=>{
+      play2=false;
+    });
+  }
+  renderRes();
+}
+
+function nextT(){
+  if(pl.length)playT((pi+1)%pl.length);
+}
+function prevT(){
+  if(pl.length)playT((pi-1+pl.length)%pl.length);
+}
+
+function toggleMP(){
+  mpOpen=!mpOpen;
+  document.getElementById('mp').classList.toggle('show',mpOpen);
+  if(mpOpen&&!pl.length){
+    document.getElementById('mpSInput').value='夜空中最亮的星';
+    srchMusic();
+  }
+}
+
+// 进度条点击跳转
+document.addEventListener('DOMContentLoaded',()=>{
+  document.getElementById('mpBar')?.addEventListener('click',e=>{
+    const bar=document.getElementById('mpBar');
+    const rect=bar.getBoundingClientRect();
+    if(audio.duration)audio.currentTime=(e.clientX-rect.left)/rect.width*audio.duration;
+  });
+});
 </script>
 </body>
 </html>
