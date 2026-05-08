@@ -139,9 +139,11 @@ body.dark{--glass:rgba(0,0,0,.3);--glass-hover:rgba(0,0,0,.45);--border:rgba(255
   <a class="lan-item" href="http://192.168.2.225:8000" target="_blank">🖥️ 飞牛OS</a>
   <a class="lan-item" href="http://192.168.2.225:8000/v" target="_blank">🎬 飞牛影视</a>
   <a class="lan-item" href="http://192.168.2.225:3000" target="_blank">🎥 MoviePilot</a>
+  <a class="lan-item" href="http://192.168.2.225:5173" target="_blank">🎵 道理鱼</a>
+  <a class="lan-item" href="http://192.168.2.225:9527/music/" target="_blank">🎵 落雪音乐</a>
   <a class="lan-item" href="http://192.168.2.1" target="_blank">📡 路由器</a>
   <a class="lan-item" href="http://192.168.2.252" target="_blank">⚡ Opwert</a>
-  <div class="lan-tip"><strong>💡 提示：</strong>内网服务需在同一WiFi下访问</div>
+  <div class="lan-tip"><strong>💡 提示：</strong>内网服务需在同一局域网</div>
 </div>
 
 <div class="topbar">
@@ -240,4 +242,92 @@ render();
 
 // 天气：直接用wttr.in上海（无需定位，快速准确）
 (function loadW(){
-  var icons={'Clear':'☀️','Sunny':'☀️','Partly cloudy':'⛅','Cloudy':'🌥️','Overcas
+  var icons={'Clear':'☀️','Sunny':'☀️','Partly cloudy':'⛅','Cloudy':'🌥️','Overcast':'☁️','Mist':'🌫️','Fog':'🌫️','Light rain':'🌧️','Heavy rain':'🌧️','Light snow':'🌨️','Heavy snow':'❄️','Sleet':'🌨️','Thunderstorm':'⛈️','Hail':'🧊'};
+  var xh=new XMLHttpRequest();
+  xh.open('GET','https://wttr.in/Shanghai?format=j1',true);
+  xh.onload=function(){
+    if(xh.status===200){
+      try{
+        var d=JSON.parse(xh.responseText).current_condition[0];
+        var temp=d.temp_C+'°';
+        var desc=d.weatherDesc[0].value;
+        var wcode=d.weatherCode[0];
+        document.getElementById('wtemp').textContent=temp;
+        document.getElementById('wdesc').textContent=desc;
+        document.getElementById('wcity').textContent='上海';
+        document.getElementById('wicon').textContent=icons[desc]||icons[wcode]||'🌡️';
+      }catch(e){console.log('天气解析失败',e);}
+    }
+  };
+  xh.onerror=function(){document.getElementById('wcity').textContent='天气获取失败';};
+  xh.send();
+})();
+
+// 内网面板切换
+function toggleLan(){
+  document.getElementById('lanPanel').classList.toggle('open');
+}
+
+// 搜索
+function goSearch(){
+  var q=document.getElementById('sInput').value;
+  if(!q)return;
+  var engines={baidu:'https://www.baidu.com/s?wd=',bing:'https://www.bing.com/search?q=',google:'https://www.google.com/search?q=',ddg:'https://duckduckgo.com/?q='};
+  var se=window.currentEngine||'baidu';
+  window.open(engines[se]+encodeURIComponent(q),'_blank');
+}
+function setE(name,el){
+  window.currentEngine=name;
+  document.querySelectorAll('.epill').forEach(e=>e.classList.remove('active'));
+  el.classList.add('active');
+}
+
+// 音乐播放器
+var currentTrack=0;
+var isPlaying=false;
+var tracks=[
+  {name:'小路人',artist:'欢迎使用',url:'https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3'}
+];
+function toggleMP(){
+  document.getElementById('mp').classList.toggle('show');
+}
+function togPlay(){
+  var a=document.getElementById('audioEl');
+  if(!a.src||a.src.indexOf('example')>-1){srchMusic();return;}
+  if(isPlaying){a.pause();isPlaying=false;document.getElementById('pbtn').textContent='▶';document.getElementById('mcover').classList.remove('playing');}
+  else{a.play();isPlaying=true;document.getElementById('pbtn').textContent='⏸';document.getElementById('mcover').classList.add('playing');}
+}
+function prevT(){currentTrack=(currentTrack-1+tracks.length)%tracks.length;playTrack(currentTrack);}
+function nextT(){currentTrack=(currentTrack+1)%tracks.length;playTrack(currentTrack);}
+function playTrack(i){
+  var a=document.getElementById('audioEl');
+  var t=tracks[i];
+  document.getElementById('mname').textContent=t.name||'未命名';
+  document.getElementById('martist').textContent=t.artist||'';
+  if(t.url){a.src=t.url;a.play();isPlaying=true;document.getElementById('pbtn').textContent='⏸';document.getElementById('mcover').classList.add('playing');}
+  else{srchMusic();}
+}
+
+function srchMusic(){
+  var q=document.getElementById('mpSInput').value||'华语流行';
+  var mp=document.getElementById('neteasePlayer');
+  var pw=document.getElementById('playerWrap');
+  var tip=document.getElementById('searchTip');
+  mp.src='https://music.163.com/outchain/player?type=0&id=887145790&auto=1&bgId=7cd5eede3a97c4f6e6f6';
+  document.getElementById('playerTip').textContent='🎵 正在加载播放器...';
+  mp.onload=function(){document.getElementById('playerTip').textContent='';};
+  mp.onerror=function(){document.getElementById('playerTip').textContent='⚠️ 播放器加载失败';};
+  pw.style.display='block';
+  tip.style.display='none';
+  isPlaying=true;
+  document.getElementById('pbtn').textContent='⏸';
+  document.getElementById('mcover').classList.add('playing');
+  document.getElementById('mname').textContent='网易云音乐';
+  document.getElementById('martist').textContent='搜索: '+q;
+}
+
+window.currentEngine='baidu';
+
+</script>
+</body>
+</html>
